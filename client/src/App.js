@@ -1,6 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './Bootstrap/bootstrap/css/bootstrap.min.css'
+import './css/custom.css'
+import NavBar from './NavBar';
+import Footer from './Footer';
 import { render } from '@testing-library/react';
 
 
@@ -11,7 +15,7 @@ class App extends React.Component{
   }
 
   callAPI(){
-    fetch("http://localhost:9000/apiRun")
+    fetch("http://localhost:9000/apiRun/too")
       .then(res => res.text())
       .then(res => this.setState({apiResponse: res}));
   }
@@ -20,17 +24,32 @@ class App extends React.Component{
     this.callAPI();
   }
 
+  
   render() {
+
+    function sayHello()
+    {
+      console.log("Hello there");
+    }
+
     return (
       <div className="App">
-        <header className="App-header">
+        {/*<header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          
-        </header>
+        </header>*/}
+
+        <NavBar />
 
         <p>
           {this.state.apiResponse}
         </p>
+      
+        <p>
+          <button onClick={sayHello}>Click Me</button>
+        </p>
+        
+        <Footer />  
+        
       </div>
     );
   }

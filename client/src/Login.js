@@ -1,73 +1,130 @@
 import React from "react";
-import './css/loginForms.css'
 
+import {
+    FormGroup,
+    Label,
+    Input,
+    FormText,
+    Button,
+    Card,
+    CardBody
+} from "reactstrap";
 
-class LoginPage extends React.Component
-{
+class LoginPage extends React.Component {
+
     constructor(props){
         super(props);
         this.state = {
             values: {
+                username: "",
                 email: "",
-                password: ""
+                password: "",
+                password2: ""
             },
             isSubmitting: false,
             isError: false
         };
       }
     
-    render() {
-        return (
-            
+    handleInputChange = e => this.setState({
+        values: { ...this.state.values, [e.target.name]: e.target.value }
+    });
+  
+    submitForm = async e => {
+        e.preventDefault();
+        this.setState({ isSubmitting: true });
+    
+        const res = await fetch("http://localhost:9000/apiRun/too", {
+            method: "POST",
+            body: JSON.stringify(this.state.values),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        this.setState({ isSubmitting: false });
+        const data = await res.json();
+        !data.hasOwnProperty("error")
+        ? this.setState({ message: data.success })
+        : this.setState({ message: data.error, isError: true })
+
+        console.log(data);
+    };
+
+    render()
+    {
+    return (
             <div className="container">
-                
-                <div className="row">
-                    <div className="col-lg-10 col-xl-9 mx-auto">
-                        <div className="card card-signin flex-row my-5">
-                        <div className="card-img-left d-none d-md-flex">
-                            
-                        </div>
-                        <div className="card-body">
-                            <h5 className="card-title text-center">Register</h5>
-                            
-                            <form id="registerSubmit" className="form-signin">
-                                <div className="form-label-group">
-                                    <input type="text" id="inputUserame" className="form-control" placeholder="Username" required autofocus></input>
-                                    <label for="inputUserame">Username</label>
-                                </div>
-
-                                <div className="form-label-group">
-                                    <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required></input>
-                                    <label for="inputEmail">Email address</label>
-                                </div>
-                                
-                                <hr></hr>
-
-                                <div className="form-label-group">
-                                    <input type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
-                                    <label for="inputPassword">Password</label>
-                                </div>
-                                
-                                <div className="form-label-group">
-                                    <input type="password" id="inputConfirmPassword" className="form-control" placeholder="Password" required></input>
-                                    <label for="inputConfirmPassword">Confirm password</label>
-                                </div>
-
-                                <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit" >Register</button>
-                                <a className="d-block text-center mt-2 small" href="#">Sign In</a>
-                                <hr className="my-4"></hr>
-                                <button className="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i className="fab fa-google mr-2"></i> Sign up with Google</button>
-                                <button className="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i className="fab fa-facebook-f mr-2"></i> Sign up with Facebook</button>
-                            </form>
-                        
-                        </div>
-                        </div>
-                    </div>
-                </div>
+                <Card>
+                    <CardBody>
+                        <form onSubmit={this.submitForm}>
+                             <FormGroup>
+                                <Label for="username">Username</Label>
+                                <Input
+                                    type="text"
+                                    name="username"
+                                    id="username"
+                                    placeholder="Enter username"
+                                    value={this.state.values.username}
+                                    onChange={this.handleInputChange}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="exampleEmail">Email address</Label>
+                                <Input
+                                    type="email"
+                                    name="email"
+                                    id="exampleEmail"
+                                    placeholder="Enter email"
+                                    value={this.state.values.email}
+                                    onChange={this.handleInputChange}
+                                    />
+                                <FormText color="muted">
+                                    We'll never share your email with anyone else.
+                                </FormText>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="password">Password</Label>
+                                <Input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    placeholder="Password"
+                                    autoComplete="off"
+                                    value={this.state.values.password}
+                                    onChange={this.handleInputChange}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="confirmPassword">Confirm Password</Label>
+                                <Input
+                                    type="password"
+                                    name="password2"
+                                    id="confirmPassword"
+                                    placeholder="Confirm your password"
+                                    autoComplete="off"
+                                    value={this.state.values.password2}
+                                    onChange={this.handleInputChange}
+                                />
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input type="checkbox" />{' '}
+                                        Check me out
+                                    <span className="form-check-sign">
+                                    <span className="check"></span>
+                                    </span>
+                                </Label>
+                            </FormGroup>
+                            <Button color="primary" type="submit">
+                                Submit
+                            </Button>
+                        </form>
+                    </CardBody>
+                </Card>
             </div>
-        
         );
     }
-}
-    
+};
+
 export default LoginPage;

@@ -1,13 +1,17 @@
 import React from 'react';
 //import logo from './logo.svg';
+import "./assets/scss/blk-design-system-react.scss";
+import "./assets/css/nucleo-icons.css";
 import './App.css';
-import './Bootstrap/bootstrap/css/bootstrap.min.css'
-import './css/custom.css'
+
 import NavBar from './NavBar';
 import Footer from './Footer';
 import Homepage from './Homepage';
 import LoginPage from './Login';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+
+import './css/custom.css';;
+
 //import { render } from '@testing-library/react';
 
 
@@ -18,7 +22,7 @@ class App extends React.Component{
   }
 
   callAPI(){
-    fetch("http://localhost:9000/apiRun/too")
+    fetch("http://localhost:9000/")
       .then(res => res.text())
       .then(res => this.setState({apiResponse: res}));
   }
@@ -29,11 +33,6 @@ class App extends React.Component{
 
   render() {
 
-    function sayHello()
-    {
-      console.log("Hello there");
-    }
-
     return (
       <div className="App">
         {/*<header className="App-header">
@@ -42,20 +41,20 @@ class App extends React.Component{
 
         
 
-        <p>
+        {/*<p>
           {this.state.apiResponse}
         </p>
       
         <p>
           <button onClick={sayHello}>Click Me</button>
-        </p>
+        </p>*/}
 
         <Router>
           <NavBar />
 
-          <Switch>
-            <Route path="/" exact component={Homepage} />
-            <Route path="/login" component={LoginPage} />
+            <Switch>
+              <Route path="/" exact component={Homepage} />
+              <Route path="/login" component={LoginPage} />
             </Switch>
 
             <Footer />
@@ -85,7 +84,10 @@ class App extends React.Component{
       </header>
     </div>
   );
-}*/
+}
+
+
+*/
 
 
 export default App;

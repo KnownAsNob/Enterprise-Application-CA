@@ -1,47 +1,77 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 
-function NavBar() {
-    return (
+// reactstrap components
+import {
+  Collapse,
+  UncontrolledCollapse,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
+  FormGroup,
+  Form,
+  Input,
+  NavbarBrand,
+  Navbar,
+  NavItem,
+  NavLink,
+  Nav,
+  Container
+} from "reactstrap";
 
-        <nav className="navbar navbar-expand-lg navbar-dark fixed-top">
-            <div className="container">
-            <Link to="/">
-                <a className="navbar-brand" href="http://hello.com/">Start Bootstrap</a>
-            </Link>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
+class NavBar extends React.Component {
+    render() {
+        return (
+            <>
+            <Navbar className="bg-success" expand="lg">
+                <Container>
 
-            <div className="collapse navbar-collapse" id="navbarResponsive">
-                <ul className="navbar-nav ml-auto">
-                    <Link to="/">
-                        <li className="nav-item active">
-                            <a className="nav-link" href="http://hello.com/">Home
-                            <span className="sr-only">(current)</span>
-                            </a>
-                        </li>
-                    </Link>
-                    <li className="nav-item">
-                        <a className="nav-link" href="http://hello.com/">About</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="http://hello.com/">Services</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="http://hello.com/">Contact</a>
-                    </li>
-                    <Link to="/login">
-                        <li className="nav-item login">
-                            <a className="nav-link" href="http://hello.com/">Login</a>
-                        </li>
-                    </Link>
-                </ul>
-            </div>
-            </div>
-        </nav>
+                    {/* Brand */}
+                    <NavbarBrand href="/">
+                        Thoughtify
+                    </NavbarBrand>
+                    <button
+                        className="navbar-toggler"
+                        id="navbarColor02"
+                        type="button"
+                        >
+                        <span className="navbar-toggler-bar navbar-kebab" />
+                        <span className="navbar-toggler-bar navbar-kebab" />
+                        <span className="navbar-toggler-bar navbar-kebab" />
+                    </button>
 
-    );
+                    {/* Links */}
+                    <UncontrolledCollapse navbar toggler="#navbarColor02">
+                        <Nav className="mr-auto" navbar>
+                            <NavItem className="active">
+                                <NavLink href="/">
+                                Home <span className="sr-only">(current)</span>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="#pablo" onClick={e => e.preventDefault()}>
+                                Features
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/login">
+                                Login
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                        
+                        {/* Search */}
+                        <Form className="form-inline ml-auto">
+                            <FormGroup className="no-border">
+                                <Input placeholder="Search" type="text" />
+                            </FormGroup>
+                        </Form>
+                    </UncontrolledCollapse>
+                </Container>
+            </Navbar>
+            </>
+        );
+    }
 }
 
 export default NavBar;

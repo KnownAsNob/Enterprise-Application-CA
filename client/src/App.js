@@ -8,6 +8,7 @@ import NavBar from './NavBar';
 import Footer from './Footer';
 import Homepage from './Homepage';
 import LoginPage from './Login';
+
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import './css/custom.css';;

@@ -34,7 +34,7 @@ class LoginPage extends React.Component {
         e.preventDefault();
         this.setState({ isSubmitting: true });
     
-        const res = await fetch("http://localhost:9000/apiRun/too", {
+        const res = await fetch("http://localhost:9000/apiRun/createAccount", {
             method: "POST",
             body: JSON.stringify(this.state.values),
             headers: {
@@ -49,6 +49,7 @@ class LoginPage extends React.Component {
         : this.setState({ message: data.error, isError: true })
 
         console.log(data);
+        console.log("Is error? " + this.state.isError);
     };
 
     render()

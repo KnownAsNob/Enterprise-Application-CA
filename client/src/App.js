@@ -1,11 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 import './Bootstrap/bootstrap/css/bootstrap.min.css'
 import './css/custom.css'
 import NavBar from './NavBar';
 import Footer from './Footer';
-import { render } from '@testing-library/react';
+import Homepage from './Homepage';
+import LoginPage from './Login';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+//import { render } from '@testing-library/react';
 
 
 class App extends React.Component{
@@ -20,11 +23,10 @@ class App extends React.Component{
       .then(res => this.setState({apiResponse: res}));
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.callAPI();
   }
 
-  
   render() {
 
     function sayHello()
@@ -38,7 +40,7 @@ class App extends React.Component{
           <img src={logo} className="App-logo" alt="logo" />
         </header>*/}
 
-        <NavBar />
+        
 
         <p>
           {this.state.apiResponse}
@@ -47,9 +49,18 @@ class App extends React.Component{
         <p>
           <button onClick={sayHello}>Click Me</button>
         </p>
-        
-        <Footer />  
-        
+
+        <Router>
+          <NavBar />
+
+          <Switch>
+            <Route path="/" exact component={Homepage} />
+            <Route path="/login" component={LoginPage} />
+            </Switch>
+
+            <Footer />
+        </Router>  
+
       </div>
     );
   }

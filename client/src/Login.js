@@ -44,7 +44,7 @@ class LoginPage extends React.Component {
 
         this.setState({ isSubmitting: false });
         const data = await res.json();
-        !data.hasOwnProperty("error")
+        !data.hasOwnProperty("errors")
         ? this.setState({ message: data.success })
         : this.setState({ message: data.error, isError: true })
 

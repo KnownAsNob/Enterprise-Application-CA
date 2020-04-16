@@ -49,7 +49,7 @@ exports.createUser = function (req, res, user) {
         });
     }); 
     
-    res.send({ username: user.username });
+    res.send({ username: user.username, email: user.email });
 
 } //End create user
 

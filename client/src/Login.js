@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useContext, Component } from "react";
+
 
 import {
     FormGroup,
@@ -9,6 +10,7 @@ import {
     Card,
     CardBody
 } from "reactstrap";
+
 
 class LoginPage extends React.Component {
 
@@ -23,17 +25,19 @@ class LoginPage extends React.Component {
             },
             isSubmitting: false,
             isError: false
+            
         };
       }
-    
+
+
     handleInputChange = e => this.setState({
-        values: { ...this.state.values, [e.target.name]: e.target.value }
+        values: { ...this.state.values, [e.target.name]: e.target.value }     
     });
   
     submitForm = async e => {
         e.preventDefault();
         this.setState({ isSubmitting: true });
-    
+
         const res = await fetch("http://localhost:9000/apiRun/createAccount", {
             method: "POST",
             body: JSON.stringify(this.state.values),
@@ -41,21 +45,25 @@ class LoginPage extends React.Component {
                 "Content-Type": "application/json"
             }
         });
+        
 
         this.setState({ isSubmitting: false });
         const data = await res.json();
         !data.hasOwnProperty("errors")
         ? this.setState({ message: data.success })
         : this.setState({ message: data.error, isError: true })
-
-        console.log(data);
+        
+        console.log("Returned: " + data);
         console.log("Is error? " + this.state.isError);
+
     };
 
     render()
     {
-    return (
+        return (
+            
             <div className="container">
+
                 <Card>
                     <CardBody>
                         <form onSubmit={this.submitForm}>

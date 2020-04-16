@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 //import logo from './logo.svg';
 import "./assets/scss/blk-design-system-react.scss";
 import "./assets/css/nucleo-icons.css";
@@ -8,6 +8,7 @@ import NavBar from './NavBar';
 import Footer from './Footer';
 import Homepage from './Homepage';
 import LoginPage from './Login';
+import SearchResultsPage from './SearchResultsPage';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -52,6 +53,7 @@ class App extends React.Component {
           <Switch>
             <Route path="/" exact component={Homepage} />
             <Route path="/login" component={LoginPage} />
+            <Route exact path="/results" component={SearchResultsPage} />
           </Switch>
 
           <Footer />

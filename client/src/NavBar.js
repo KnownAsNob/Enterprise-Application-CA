@@ -1,25 +1,59 @@
 import React from "react";
+import { Route, Switch, withRouter } from "react-router-dom";
 
 // reactstrap components
 import {
-  Collapse,
-  UncontrolledCollapse,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  FormGroup,
-  Form,
-  Input,
-  NavbarBrand,
-  Navbar,
-  NavItem,
-  NavLink,
-  Nav,
-  Container
+    Button,
+    //Collapse,
+    UncontrolledCollapse,
+    //DropdownToggle,
+    //DropdownMenu,
+    //DropdownItem,
+    //UncontrolledDropdown,
+    //FormControl,
+    FormGroup,
+    Form,
+    Input,
+    NavbarBrand,
+    Navbar,
+    NavItem,
+    NavLink,
+    Nav,
+    Container
 } from "reactstrap";
 
 class NavBar extends React.Component {
+    
+    state = {
+        searchText: ""
+    };
+
+    handleRoute = route => () => {
+        this.props.history.push({ pathname: route });
+    };
+
+    handleSearchInput = event => {
+        console.log("Handling input");
+        this.setState({
+            searchText: event.target.value
+        });
+    };
+
+    handleSearchSubmit = () => {
+        if (this.state.searchText) {
+            this.props.history.push({
+                pathname: "/results",
+                state: {
+                    searchText: this.state.searchText
+                }
+            });
+        } else {
+            alert("Please enter some search text!");
+        }
+    };
+    
+    
+    
     render() {
         return (
             <>
@@ -63,9 +97,17 @@ class NavBar extends React.Component {
                         {/* Search */}
                         <Form className="form-inline ml-auto">
                             <FormGroup className="no-border">
-                                <Input placeholder="Search" type="text" />
+                                <Input placeholder="Search" 
+                                    type="text"
+                                    onChange={this.handleSearchInput}
+                                    value={this.state.searchText} 
+                                />
                             </FormGroup>
+                            <Button onClick={this.handleSearchSubmit} variant="outline-info">
+                                Search
+                            </Button>
                         </Form>
+
                     </UncontrolledCollapse>
                 </Container>
             </Navbar>
@@ -74,4 +116,4 @@ class NavBar extends React.Component {
     }
 }
 
-export default NavBar;
+export default withRouter(NavBar);

@@ -49,12 +49,13 @@ class LoginPage extends React.Component {
         this.setState({ isSubmitting: false });
         const data = await res.json();
         !data.hasOwnProperty("errors")
-        ? this.setState({ message: data.success })
+        ? this.props.handleSuccessfulAuth(data)
         : this.setState({ message: data.error, isError: true })
         
         console.log("Returned: " + data);
         console.log("Is error? " + this.state.isError);
 
+        {/*? this.setState({ message: data.success })*/}
     };
 
     render()
@@ -62,6 +63,8 @@ class LoginPage extends React.Component {
         return (
             
             <div className="container">
+                
+                <h1>Status: {this.props.loggedInStatus}</h1>
 
                 <Card>
                     <CardBody>

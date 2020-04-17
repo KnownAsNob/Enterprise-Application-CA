@@ -1,6 +1,11 @@
 var express = require("express");
 var router = express.Router();
 
+var bodyParser = require('body-parser')
+
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+
 //Validation
 var database_module = require('../service_modules/database_module.js');
 const { check, validationResult } = require('express-validator');
@@ -10,18 +15,34 @@ var api_module = require('../service_modules/api_module.js');
 
 const https = require('https');
 
-
-
 router.get("/", function(req, res, next){
     res.send("This is the homepage");
     res.send("API is running");
 })
 
-/*router.get("/too", function(req, res, next){
-    //res.send("I got something");
-    console.log(req.params);
-    //res.send("I got user: " + req.params.username);
-})*/
+router.get("/too", function(req, res){
+    
+    const xhttp = new XMLHttpRequest();
+
+    console.log("Made req");
+
+    xhttp.onreadystatechange = function() {
+        
+        console.log(this.status);
+
+        if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           console.log("Gotcha");
+           response = JSON.parse(xhttp.responseText); 
+
+      
+            res.send(response);
+        }
+    };
+    xhttp.open("GET", "http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json", true);
+    xhttp.send();
+    
+})
 
 /*router.post('/createAccount', (req, res) => {
     console.log(req.body);
@@ -90,7 +111,10 @@ router.get('/search/:userSearch', function(req, res){
 
 // ---------------------------------------------
 
-const options = {
+//Get token
+//api_module.tokenAPI();
+
+/*const options = {
     hostname: 'api.spotify.com',
     path: '/v1/search?q=Muse&type=track%2Cartist&market=US&limit=10&offset=5',
     method: 'GET',
@@ -114,6 +138,15 @@ externalReq.on('error', error => {
     console.error(error)
 })
 
-externalReq.end()
+externalReq.end()*/
+
 
 module.exports=router;
+
+
+
+
+
+
+//http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json
+///2.0/?method=chart.gettoptracks&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json

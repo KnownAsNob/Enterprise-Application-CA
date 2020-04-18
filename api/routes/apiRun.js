@@ -6,6 +6,8 @@ var bodyParser = require('body-parser')
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 
+const https = require('https');
+
 //Validation
 var database_module = require('../service_modules/database_module.js');
 const { check, validationResult } = require('express-validator');
@@ -13,12 +15,16 @@ const { check, validationResult } = require('express-validator');
 //API
 var api_module = require('../service_modules/api_module.js');
 
-const https = require('https');
 
-router.get("/", function(req, res, next){
-    res.send("This is the homepage");
-    res.send("API is running");
-})
+//Homepage test response
+/*router.post("/", function(req, res, next){ //Change to get
+    
+    console.log("Visited");
+  
+  //res.render('index', { title: 'Express' });
+    
+})*/
+
 
 router.get("/too", function(req, res){
     
@@ -40,20 +46,22 @@ router.get("/too", function(req, res){
         }
     };
     xhttp.open("GET", "http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json", true);
-    xhttp.send();
-    
+    xhttp.send(); 
 })
 
-/*router.post('/createAccount', (req, res) => {
-    console.log(req.body);
-    res.send({ error: true});
-  })
+//Check if session contains user login
+router.post('/checkAuth', (req, res) => {
 
-module.exports=router;*/
+    if(req.session.loggedIn){
+        res.send({loggedIn: "LOGGED_IN", user: {username: req.session.user.username, email: req.session.user.email}});
+    } 
+    
+    else {
+        res.send({loggedIn: "NOT_LOGGED_IN", user: {username: "", email: ""}});
+    }
+})
 
 //router.post('/createAccount', [checkValidation, createProfile]);
-
-//router.post('/createAccount', [accountModules.validateRegInput]);
 
 //Validate input and create account
 router.post('/createAccount', [
@@ -80,6 +88,11 @@ router.post('/createAccount', [
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
     }
+
+    if(req.session.loggedIn){
+        
+        res.send({error: "true"});
+    }
     
     console.log("User successfully validated. Adding to database...");
 
@@ -98,6 +111,12 @@ router.post('/createAccount', [
         email: req.body.email,
         password: req.body.password
     });
+
+    //Set session login information
+    req.session.loggedIn = 1;
+    req.session.user = {username: req.body.username, email: req.body.email };
+
+    res.send({ username: req.body.username, email: req.body.email });
 });
 
 //Validate user search and get results

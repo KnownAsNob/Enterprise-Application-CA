@@ -37,3 +37,46 @@ externalReq.on('error', error => {
 externalReq.end()
 
 module.exports=router;*/
+
+/*if(req.session.page_views){
+    req.session.page_views++;
+    res.send("You visited this page " + req.session.page_views + " times");
+ } else {
+    req.session.page_views = 1;
+    res.send("Welcome to this page for the first time!");
+ }*/
+
+ //Homepage test response
+router.get("/home", function(req, res, next){ //Change to get
+    
+    console.log("Visited homepage");
+    console.log(req.session);
+
+    if(req.session.loggedIn){
+        //req.session.page_views++;
+        res.send("You are logged in");
+        //console.log("Yep, it's there...");
+     } else {
+        //req.session.loggedIn = 1;
+        res.send("Not logged in");
+       
+     }
+
+    //res.send("Homepage");
+  
+  //res.render('index', { title: 'Express' });
+    
+})
+
+//Homepage test response
+router.get("/login", function(req, res, next){ //Change to get
+    
+    console.log("Logged In");
+    req.session.loggedIn = 1;
+    console.log(req.session);
+
+    res.send("Logged in");
+  
+  //res.render('index', { title: 'Express' });
+    
+})

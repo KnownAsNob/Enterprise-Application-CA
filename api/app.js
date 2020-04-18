@@ -1,9 +1,14 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
+const redis = require('redis');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
+
+let RedisStore = require('connect-redis')(session);
+let redisClient = redis.createClient();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,10 +23,21 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}))
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: "Shh, its a secret!",
+  store: new RedisStore({ client: redisClient }),
+  resave: true, 
+  saveUninitialized: true
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -4,6 +4,8 @@ import "./assets/scss/blk-design-system-react.scss";
 import "./assets/css/nucleo-icons.css";
 import './App.css';
 
+//chrome://settings/siteData
+
 import NavBar from './NavBar';
 import Footer from './Footer';
 import Homepage from './Homepage';
@@ -41,7 +43,20 @@ class App extends React.Component {
   }
 
   checkLoginStatus() {
-
+    const res = fetch("http://localhost:9000/apiRun/checkAuth", {
+        method: "POST",
+        body: JSON.stringify(this.state.values),
+        headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+    .then(res => res.json()
+    //.then(console.log(res));
+    .then(data => this.setState({
+      loggedInStatus: data.loggedIn,
+      user: data.user
+    })));
   }
 
   componentDidMount() {
@@ -49,25 +64,28 @@ class App extends React.Component {
   }
 
   callAPI(){
-    fetch("http://localhost:9000/apiRun/too")
-      .then(res => res.text())
-      .then(res => this.setState({apiResponse: res}));
+    //fetch("http://localhost:9000/apiRun/")
+      //.then(res => res.text())
+      //.then(res => this.setState({apiResponse: res}));
+      const res = fetch("http://localhost:9000/apiRun/", {
+            method: "POST",
+            body: JSON.stringify(this.state.values),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        }).then(res => res.text())
+        .then(res => this.setState({apiResponse: res}));
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     this.callAPI();
-  }
+  }*/
 
   render() {
     
     return (
       <div className="App">
-
-        <p>
-          {this.state.apiResponse}
-        </p>
-      
-      
 
         <Router>
           <NavBar />

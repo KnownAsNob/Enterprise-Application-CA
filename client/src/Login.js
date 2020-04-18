@@ -42,10 +42,10 @@ class LoginPage extends React.Component {
             body: JSON.stringify(this.state.values),
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            credentials: "include"
         });
         
-
         this.setState({ isSubmitting: false });
         const data = await res.json();
         !data.hasOwnProperty("errors")

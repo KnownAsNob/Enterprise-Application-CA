@@ -48,8 +48,11 @@ exports.createUser = function (req, res, user) {
 
         });
     }); 
-    
-    res.send({ username: user.username, email: user.email });
+
+    //req.session.loggedIn = true;
+    //req.session.user = {username: user.username, email: user.email };
+
+    //res.send({ username: user.username, email: user.email });
 
 } //End create user
 

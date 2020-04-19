@@ -71,6 +71,45 @@ router.post('/signout', (req, res) => {
 	});
 })
 
+//Validate and check login
+router.post('/login', [
+    check('username')
+        .isAlphanumeric().withMessage('Username can only contain letters and numbers!'),
+    check('password')
+        .isLength({ min: 5, max: 10 }).withMessage('Password length is not correct!')
+        .isAscii().withMessage('Passwords cannot contain special symbols!')
+
+], (req, res) => {
+    //Check validation results and returns object is errors present
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+}
+
+    if(req.session.loggedIn){
+        
+        res.send({error: "true"});
+    }
+
+    console.log("User details validated. Checking database...");
+
+    //Fetch user from database. authenticate and send response
+    /*response = database_module.authenticateUser(req, res, {
+        username: req.body.username,
+        password: req.body.password
+    });*/
+
+    response = database_module.authenticateUser(req, res, {
+        username: req.body.username,
+        password: req.body.password
+    }).then(function(str){
+        res.send(str);
+    });
+
+    //Session is set within authenticateUser
+});
+
+
 //router.post('/createAccount', [checkValidation, createProfile]);
 
 //Validate input and create account
@@ -108,12 +147,6 @@ router.post('/createAccount', [
 
     //Hash password
     req.body.password = database_module.hashPassword(req.body.password);
-
-    /*if(bcrypt.compareSync('somePassword', hash)) {
-        // Passwords match
-       } else {
-        // Passwords don't match
-       }*/
     
     //Create user in database
     database_module.createUser(req, res, {

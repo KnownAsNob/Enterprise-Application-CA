@@ -68,7 +68,7 @@ class NavBar extends React.Component {
 
         else 
         {
-            return <NavItem><NavLink href="/login">Login</NavLink></NavItem>; 
+            return <NavItem><NavLink href="/createAccount">Login</NavLink></NavItem>; 
         }
     }
 
@@ -84,8 +84,6 @@ class NavBar extends React.Component {
         return (
             <>
             <Navbar className="bg-success" expand="lg">
-                
-                <h1>Status: {this.props.loggedInStatus}</h1>
                 
                 <Container>
 

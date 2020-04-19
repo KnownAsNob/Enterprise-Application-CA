@@ -6,6 +6,7 @@ import {
     Label,
     Input,
     FormText,
+    NavLink,
     Button,
     Card,
     CardBody
@@ -24,7 +25,8 @@ class LoginPage extends React.Component {
                 password2: ""
             },
             isSubmitting: false,
-            isError: false
+            isError: false,
+            errorMsg: ""
         };
     }
 
@@ -36,7 +38,7 @@ class LoginPage extends React.Component {
         e.preventDefault();
         this.setState({ isSubmitting: true });
 
-        const res = await fetch("http://localhost:9000/apiRun/createAccount", {
+        const res = await fetch("http://localhost:9000/account/login", {
             method: "POST",
             body: JSON.stringify(this.state.values),
             headers: {
@@ -47,16 +49,20 @@ class LoginPage extends React.Component {
         
         this.setState({ isSubmitting: false });
         const data = await res.json();
-        !data.hasOwnProperty("errors")
-        ? this.props.handleSuccessfulAuth(data)
-        : this.setState({ message: data.error, isError: true })
+        
+        if(!data.hasOwnProperty("errors")) {
+            this.props.handleSuccessfulAuth(data);
+            this.props.history.push({pathname: "/"});
+        }
+
+        else {
+            this.setState({ message: data.error, isError: true, errorMsg: "We don't recognize those details. Have another go!" })
+        }
         
         console.log("Returned: " + data);
         console.log("Is error? " + this.state.isError);
 
-        this.props.history.push({pathname: "/"});
-
-        //? this.setState({ message: data.success })
+        //this.props.history.push({pathname: "/"});
     };
 
     render()
@@ -64,6 +70,10 @@ class LoginPage extends React.Component {
         return (
             
             <div className="container">
+
+                <h2>Login</h2>
+                
+                <p>{this.state.errorMsg}</p>
 
                 <Card>
                     <CardBody>
@@ -80,20 +90,6 @@ class LoginPage extends React.Component {
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <Label for="exampleEmail">Email address</Label>
-                                <Input
-                                    type="email"
-                                    name="email"
-                                    id="exampleEmail"
-                                    placeholder="Enter email"
-                                    value={this.state.values.email}
-                                    onChange={this.handleInputChange}
-                                    />
-                                <FormText color="muted">
-                                    We'll never share your email with anyone else.
-                                </FormText>
-                            </FormGroup>
-                            <FormGroup>
                                 <Label for="password">Password</Label>
                                 <Input
                                     type="password"
@@ -105,31 +101,11 @@ class LoginPage extends React.Component {
                                     onChange={this.handleInputChange}
                                 />
                             </FormGroup>
-                            <FormGroup>
-                                <Label for="confirmPassword">Confirm Password</Label>
-                                <Input
-                                    type="password"
-                                    name="password2"
-                                    id="confirmPassword"
-                                    placeholder="Confirm your password"
-                                    autoComplete="off"
-                                    value={this.state.values.password2}
-                                    onChange={this.handleInputChange}
-                                />
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label check>
-                                    <Input type="checkbox" />{' '}
-                                        Check me out
-                                    <span className="form-check-sign">
-                                    <span className="check"></span>
-                                    </span>
-                                </Label>
-                            </FormGroup>
-                            <Button color="primary" type="submit">
+                            <Button color="success" type="submit">
                                 Submit
                             </Button>
                         </form>
+                        <NavLink href="/createAccount">Need an account?</NavLink>
                     </CardBody>
                 </Card>
             </div>

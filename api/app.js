@@ -12,7 +12,7 @@ let redisClient = redis.createClient();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var apiRouter = require('./routes/apiRun');
+var account= require('./routes/account');
 var helloPage = require('./routes/hello');
 
 var app = express();
@@ -41,7 +41,7 @@ app.use(session({
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use("/apiRun", apiRouter);
+app.use("/account", account);
 app.use("/helloPage", helloPage);
 
 // catch 404 and forward to error handler

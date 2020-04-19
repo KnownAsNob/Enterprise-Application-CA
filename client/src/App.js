@@ -9,11 +9,12 @@ import './App.css';
 import NavBar from './NavBar';
 import Footer from './Footer';
 import Homepage from './Homepage';
-import LoginPage from './Login';
+import CreateAccountPage from './CreateAccount';
+import LoginPage from './LoginPage';
 import SearchResultsPage from './SearchResultsPage';
 
 //import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-dom';
-import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import './css/custom.css';;
 
@@ -37,7 +38,7 @@ class App extends React.Component {
   handleSuccessfulAuth(data) {
 
     console.log("Successful auth");
-    //this.props.history.push("/");
+
     this.setState({
       loggedInStatus: "LOGGED_IN",
       user: data
@@ -45,7 +46,7 @@ class App extends React.Component {
   }
 
   checkLoginStatus() {
-    const res = fetch("http://localhost:9000/apiRun/checkAuth", {
+    const res = fetch("http://localhost:9000/account/checkAuth", {
         method: "POST",
         body: JSON.stringify(this.state.values),
         headers: {
@@ -65,7 +66,7 @@ class App extends React.Component {
   }
 
   signOut() {
-      const res = fetch("http://localhost:9000/apiRun/signout", {
+      const res = fetch("http://localhost:9000/account/signout", {
             method: "POST",
             body: JSON.stringify(this.state.values),
             headers: {
@@ -83,7 +84,7 @@ class App extends React.Component {
     //fetch("http://localhost:9000/apiRun/")
       //.then(res => res.text())
       //.then(res => this.setState({apiResponse: res}));
-      const res = fetch("http://localhost:9000/apiRun/", {
+      const res = fetch("http://localhost:9000/account/", {
             method: "POST",
             body: JSON.stringify(this.state.values),
             headers: {
@@ -110,7 +111,14 @@ class App extends React.Component {
 
           <Switch>
             <Route path="/" exact component={Homepage} />
-            {/*<Route path="/login" component={LoginPage} />*/}
+            {/*<Route path="/login" component={CreateAccountPage} />*/}
+            <Route 
+              path="/createAccount" 
+              render = {props => (
+                  <CreateAccountPage {... props} loggedInStatus = {this.state.loggedInStatus} handleSuccessfulAuth = {this.handleSuccessfulAuth}/>
+                )
+              }
+            />
             <Route 
               path="/login" 
               render = {props => (

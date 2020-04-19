@@ -1,10 +1,10 @@
 import React from "react";
-//import logo from './logo.svg';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+
 import "./assets/scss/blk-design-system-react.scss";
 import "./assets/css/nucleo-icons.css";
-import './App.css';
-
-//chrome://settings/siteData
+import './css/App.css';
+import './css/custom.css';
 
 import NavBar from './NavBar';
 import Footer from './Footer';
@@ -12,25 +12,18 @@ import Homepage from './Homepage';
 import CreateAccountPage from './CreateAccount';
 import LoginPage from './LoginPage';
 import SearchResultsPage from './SearchResultsPage';
+import ProtectedRoute from './ProtectedRoute';
 
-//import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-dom';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-
-import './css/custom.css';;
-
-//import { render } from '@testing-library/react';
-
+//chrome://settings/siteData
 
 class App extends React.Component {
   
   constructor(props){
     super();
-    //this.state={apiResponse:""};
     this.state = {
       loggedInStatus: "NOT_LOGGED_IN",
       user: {}
     }
-
     this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
     this.signOut = this.signOut.bind(this);
   }
@@ -66,33 +59,34 @@ class App extends React.Component {
   }
 
   signOut() {
-      const res = fetch("http://localhost:9000/account/signout", {
-            method: "POST",
-            body: JSON.stringify(this.state.values),
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        })
-        .then(this.setState({
-          loggedInStatus: "NOT_LOGGED_IN",
-          user: ""
-        }));
+    const res = fetch("http://localhost:9000/account/signout", {
+      method: "POST",
+      body: JSON.stringify(this.state.values),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+    .then(this.setState({
+      loggedInStatus: "NOT_LOGGED_IN",
+      user: ""
+    }));
   }
 
   callAPI(){
     //fetch("http://localhost:9000/apiRun/")
-      //.then(res => res.text())
-      //.then(res => this.setState({apiResponse: res}));
-      const res = fetch("http://localhost:9000/account/", {
-            method: "POST",
-            body: JSON.stringify(this.state.values),
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        }).then(res => res.text())
-        .then(res => this.setState({apiResponse: res}));
+    //.then(res => res.text())
+    //.then(res => this.setState({apiResponse: res}));
+    const res = fetch("http://localhost:9000/account/", {
+      method: "POST",
+      body: JSON.stringify(this.state.values),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+    .then(res => res.text())
+    .then(res => this.setState({apiResponse: res}));
   }
 
   /*componentDidMount() {
@@ -100,7 +94,7 @@ class App extends React.Component {
   }*/
 
   render() {
-    
+
     return (
       <div className="App">
 
@@ -110,32 +104,34 @@ class App extends React.Component {
           <h1>Status: {this.state.loggedInStatus}</h1>
 
           <Switch>
+
             <Route path="/" exact component={Homepage} />
-            {/*<Route path="/login" component={CreateAccountPage} />*/}
-            <Route 
+            <ProtectedRoute 
               path="/createAccount" 
-              render = {props => (
-                  <CreateAccountPage {... props} loggedInStatus = {this.state.loggedInStatus} handleSuccessfulAuth = {this.handleSuccessfulAuth}/>
-                )
-              }
+              loggedInStatus = {this.state.loggedInStatus} 
+              handleSuccessfulAuth = {this.handleSuccessfulAuth}
+              component={CreateAccountPage}
             />
-            <Route 
+            <ProtectedRoute 
               path="/login" 
-              render = {props => (
-                  <LoginPage {... props} loggedInStatus = {this.state.loggedInStatus} handleSuccessfulAuth = {this.handleSuccessfulAuth}/>
-                )
-              }
+              loggedInStatus = {this.state.loggedInStatus} 
+              handleSuccessfulAuth = {this.handleSuccessfulAuth}
+              component={LoginPage}
             />
             <Route exact path="/results" component={SearchResultsPage} />
-          </Switch>
 
+          </Switch>
+          
           <Footer />
+
         </Router>
 
       </div>
     );
   }
 }
-//}
 
 export default App;
+
+{/*<ProtectedRoute path='/welcome' loggedInStatus = {this.state.loggedInStatus} component={Welcome} />
+<Route path="/login" component={CreateAccountPage} />*/}

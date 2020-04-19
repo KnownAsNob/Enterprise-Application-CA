@@ -46,11 +46,19 @@ class CreateAccountPage extends React.Component {
             credentials: "include"
         });
         
+        
+
         this.setState({ isSubmitting: false });
         const data = await res.json();
-        !data.hasOwnProperty("errors")
-        ? this.props.handleSuccessfulAuth(data)
-        : this.setState({ message: data.error, isError: true })
+        
+        if(!data.hasOwnProperty("errors"))
+        {
+            this.props.handleSuccessfulAuth(data)
+        }
+
+        else {
+            this.setState({ message: data.error, isError: true })
+        }
         
         console.log("Returned: " + data);
         console.log("Is error? " + this.state.isError);

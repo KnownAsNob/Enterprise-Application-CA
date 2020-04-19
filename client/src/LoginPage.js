@@ -5,7 +5,6 @@ import {
     FormGroup,
     Label,
     Input,
-    FormText,
     NavLink,
     Button,
     Card,

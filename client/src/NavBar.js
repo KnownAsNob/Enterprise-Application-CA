@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+//import { Route, Switch, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -28,9 +29,9 @@ class NavBar extends React.Component {
         searchText: ""
     };
 
-    handleRoute = route => () => {
+    /*handleRoute = route => () => {
         this.props.history.push({ pathname: route });
-    };
+    };*/
 
     handleSearchInput = event => {
         console.log("Handling input");
@@ -51,13 +52,41 @@ class NavBar extends React.Component {
             alert("Please enter some search text!");
         }
     };
-    
-    
+
+    handleUserStatus = () => {
+        let loggedIn = this.props.loggedInStatus;
+
+        if(loggedIn === "LOGGED_IN")
+        {
+            return (
+                <React.Fragment>
+                    <NavItem><NavLink href="/login">Account</NavLink></NavItem>
+                    <NavItem><NavLink><button type="button" id = "logout_navbar" onClick = {this.handleLogout}>Sign Out</button></NavLink></NavItem>
+                </React.Fragment>
+            );
+        }
+
+        else 
+        {
+            return <NavItem><NavLink href="/login">Login</NavLink></NavItem>; 
+        }
+    }
+
+    handleLogout = () => {
+        console.log("Handling logout");
+        this.props.history.push({
+            pathname: "/"});
+        this.props.signout();
+    };
     
     render() {
+        
         return (
             <>
             <Navbar className="bg-success" expand="lg">
+                
+                <h1>Status: {this.props.loggedInStatus}</h1>
+                
                 <Container>
 
                     {/* Brand */}
@@ -87,11 +116,8 @@ class NavBar extends React.Component {
                                 Features
                                 </NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink href="/login">
-                                Login
-                                </NavLink>
-                            </NavItem>
+                            {/* Login/ Account button */}
+                                {<this.handleUserStatus />}
                         </Nav>
                         
                         {/* Search */}

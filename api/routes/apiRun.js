@@ -61,6 +61,16 @@ router.post('/checkAuth', (req, res) => {
     }
 })
 
+//Check if session contains user login
+router.post('/signout', (req, res) => {
+
+    req.session.destroy(function (err) {
+		if(err) return console.log(err);
+        
+        res.send("User logged out");
+	});
+})
+
 //router.post('/createAccount', [checkValidation, createProfile]);
 
 //Validate input and create account

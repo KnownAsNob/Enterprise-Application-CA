@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 
 import {
     FormGroup,
@@ -24,10 +25,8 @@ class LoginPage extends React.Component {
             },
             isSubmitting: false,
             isError: false
-            
         };
-      }
-
+    }
 
     handleInputChange = e => this.setState({
         values: { ...this.state.values, [e.target.name]: e.target.value }     
@@ -55,7 +54,9 @@ class LoginPage extends React.Component {
         console.log("Returned: " + data);
         console.log("Is error? " + this.state.isError);
 
-        {/*? this.setState({ message: data.success })*/}
+        this.props.history.push({pathname: "/"});
+
+        //? this.setState({ message: data.success })
     };
 
     render()
@@ -63,8 +64,6 @@ class LoginPage extends React.Component {
         return (
             
             <div className="container">
-                
-                <h1>Status: {this.props.loggedInStatus}</h1>
 
                 <Card>
                     <CardBody>
@@ -138,4 +137,4 @@ class LoginPage extends React.Component {
     }
 };
 
-export default LoginPage;
+export default withRouter(LoginPage);

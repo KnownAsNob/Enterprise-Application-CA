@@ -12,7 +12,8 @@ import Homepage from './Homepage';
 import LoginPage from './Login';
 import SearchResultsPage from './SearchResultsPage';
 
-import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-dom';
+//import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 
 import './css/custom.css';;
 
@@ -30,6 +31,7 @@ class App extends React.Component {
     }
 
     this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
   
   handleSuccessfulAuth(data) {
@@ -52,7 +54,6 @@ class App extends React.Component {
       credentials: "include"
     })
     .then(res => res.json()
-    //.then(console.log(res));
     .then(data => this.setState({
       loggedInStatus: data.loggedIn,
       user: data.user
@@ -61,6 +62,21 @@ class App extends React.Component {
 
   componentDidMount() {
     this.checkLoginStatus();
+  }
+
+  signOut() {
+      const res = fetch("http://localhost:9000/apiRun/signout", {
+            method: "POST",
+            body: JSON.stringify(this.state.values),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        })
+        .then(this.setState({
+          loggedInStatus: "NOT_LOGGED_IN",
+          user: ""
+        }));
   }
 
   callAPI(){
@@ -88,7 +104,7 @@ class App extends React.Component {
       <div className="App">
 
         <Router>
-          <NavBar />
+          <NavBar loggedInStatus = {this.state.loggedInStatus} account = {this.state.user} signout = {this.signOut}/>
 
           <h1>Status: {this.state.loggedInStatus}</h1>
 

@@ -21,6 +21,7 @@ class SongPage extends React.Component {
         console.log(this.props.location.state.songInfo);
 
         console.log(this.props.location.state.user);
+        console.log(this.props);
 
     }
 

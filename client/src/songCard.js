@@ -15,9 +15,9 @@ class SongCard extends React.Component {
         this.props.history.push({
             pathname: "/song",
             state: {
-                songInfo: this.props.info,
-                loggedIn: this.props.loggedIn,
-                user: this.props.user
+                songInfo: this.props.info
+                //loggedIn: this.props.loggedIn,
+                //user: this.props.user
             }
         });
     }

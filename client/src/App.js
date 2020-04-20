@@ -13,6 +13,7 @@ import CreateAccountPage from './CreateAccount';
 import LoginPage from './LoginPage';
 import SearchResultsPage from './SearchResultsPage';
 import ProtectedRoute from './ProtectedRoute';
+import songPage from './songPage';
 
 //chrome://settings/siteData
 
@@ -119,6 +120,7 @@ class App extends React.Component {
               component={LoginPage}
             />
             <Route exact path="/results" component={SearchResultsPage} />
+            <Route exact path="/song/" component={songPage} />
 
           </Switch>
           

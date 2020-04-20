@@ -25,30 +25,6 @@ var api_module = require('../service_modules/api_module.js');
     
 })*/
 
-
-router.get("/too", function(req, res){
-    
-    const xhttp = new XMLHttpRequest();
-
-    console.log("Made req");
-
-    xhttp.onreadystatechange = function() {
-        
-        console.log(this.status);
-
-        if (this.readyState == 4 && this.status == 200) {
-           // Typical action to be performed when the document is ready:
-           console.log("Gotcha");
-           response = JSON.parse(xhttp.responseText); 
-
-      
-            res.send(response);
-        }
-    };
-    xhttp.open("GET", "http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json", true);
-    xhttp.send(); 
-})
-
 //Check if session contains user login
 router.post('/checkAuth', (req, res) => {
 

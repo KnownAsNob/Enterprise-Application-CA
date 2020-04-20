@@ -1,5 +1,7 @@
 import React from "react";
 
+import SongCard from './songCard';
+
 export default class SearchResultsPage extends React.Component {
     state = {
         isLoading: true,
@@ -12,19 +14,22 @@ export default class SearchResultsPage extends React.Component {
         let searchText = this.props.location.state.searchText;
         //let results = ApiData.filter(item => item.title.includes(searchText));
 
-        const res = await fetch("http://localhost:9000/apiRun/search/" + searchText, {
+        const res = await fetch("http://localhost:9000/api/search/" + searchText, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
-            }
-        });
+            },
+            credentials: "include"
+        })
+        .then(res => res.json())
 
-        this.setState({
+        //Update state
+        this.setState(prevState => ({
+            searchResults: [...prevState.searchResults, res.results.trackmatches.track],
             isLoading: false,
-            searchText: searchText,
-            //searchResults: results
-            searchResults: "Results go here..."
-        });
+            searchText: searchText
+            //searchResults: [...prevState.searchResults, res.results.trackmatches.track[1]]
+        }))
     };
 
     componentDidMount() {
@@ -40,7 +45,7 @@ export default class SearchResultsPage extends React.Component {
     }
 
     render() {
-
+        
         let toRender = this.state.isLoading ? (
             <div className="container">
                 <h1>Loading...</h1>
@@ -48,20 +53,18 @@ export default class SearchResultsPage extends React.Component {
         ) : (
         <>
             <div className="container">
-            <h1>Your Search Results</h1>
-            <ul>
-            <li>Search: "{this.state.searchText}"</li>
-            <li>Count: {this.state.searchResults.length}</li>
-            </ul>
-            {this.state.searchResults.length > 0 ? (
-            <p>{this.state.searchResults}</p>
-            /*<pre>
-            <small>{JSON.stringify(this.state.searchResults, null, 2)}</small>
-
-            </pre>*/
-            ) : (
-                <p>NO RESULTS FOUND</p>
-            )}
+                <h1>{this.state.searchResults[0].length} results for "{this.state.searchText}"</h1>
+                
+                {this.state.searchResults.length > 0 ? (
+                
+                <pre>
+                    <div className = "row">
+                        {this.state.searchResults[0].map(searchResults => <SongCard info = {searchResults}></SongCard>)}
+                    </div>
+                </pre>
+                ) : (
+                    <p>We couldn't find anything for "{this.state.searchText}"!</p>
+                )}
             </div>
             </>
         );
@@ -77,4 +80,6 @@ body: JSON.stringify(this.state.values),
 headers: {
 "Content-Type": "application/json"
 }
-});*/
+});
+<p>{this.state.searchResults}</p>
+<small>{JSON.stringify(this.state.searchResults, null, 2)}</small>*/

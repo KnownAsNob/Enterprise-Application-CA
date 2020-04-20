@@ -11,3 +11,11 @@
   outline:none;
   color:white
 }
+
+.card-artist {
+  font-size: 180%;
+}
+
+.song-card-text {
+  font-size: 130%;
+}

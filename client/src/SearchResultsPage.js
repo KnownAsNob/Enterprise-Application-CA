@@ -34,6 +34,7 @@ export default class SearchResultsPage extends React.Component {
 
     componentDidMount() {
         this.handleSearch();
+        
     }
 
     componentDidUpdate(prevProps) {
@@ -59,7 +60,7 @@ export default class SearchResultsPage extends React.Component {
                 
                 <pre>
                     <div className = "row">
-                        {this.state.searchResults[0].map(searchResults => <SongCard info = {searchResults}></SongCard>)}
+                        {this.state.searchResults[0].map(searchResults => <SongCard info = {searchResults} loggedIn = {this.props.location.state.loggedIn} user = {this.props.location.state.user}></SongCard>)}
                     </div>
                 </pre>
                 ) : (

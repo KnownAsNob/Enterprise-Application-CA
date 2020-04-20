@@ -45,7 +45,9 @@ class NavBar extends React.Component {
             this.props.history.push({
                 pathname: "/results",
                 state: {
-                    searchText: this.state.searchText
+                    searchText: this.state.searchText,
+                    loggedIn: this.props.loggedInStatus,
+                    user: this.props.account
                 }
             });
         } else {
@@ -60,7 +62,7 @@ class NavBar extends React.Component {
         {
             return (
                 <React.Fragment>
-                    <NavItem><NavLink href="/login">Account</NavLink></NavItem>
+                    <NavItem><NavLink href="/account">Account</NavLink></NavItem>
                     <NavItem><NavLink><button type="button" id = "logout_navbar" onClick = {this.handleLogout}>Sign Out</button></NavLink></NavItem>
                 </React.Fragment>
             );

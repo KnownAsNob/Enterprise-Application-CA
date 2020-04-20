@@ -19,3 +19,10 @@
 .song-card-text {
   font-size: 130%;
 }
+
+.comment{
+  background-color: #1f2251;
+  outline: 1px solid white;
+  padding: 1%;
+}
+

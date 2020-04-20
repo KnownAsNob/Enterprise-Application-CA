@@ -14,6 +14,7 @@ import LoginPage from './LoginPage';
 import SearchResultsPage from './SearchResultsPage';
 import ProtectedRoute from './ProtectedRoute';
 import songPage from './songPage';
+import AccountPage from './AccountInfo';
 
 //chrome://settings/siteData
 
@@ -119,8 +120,9 @@ class App extends React.Component {
               handleSuccessfulAuth = {this.handleSuccessfulAuth}
               component={LoginPage}
             />
+            <Route exact path="/account" loggedInStatus = {this.state.loggedInStatus} account = {this.state.user} component={AccountPage} />
             <Route exact path="/results" component={SearchResultsPage} />
-            <Route exact path="/song/" component={songPage} />
+            <Route exact path="/song" component={songPage} />
 
           </Switch>
           

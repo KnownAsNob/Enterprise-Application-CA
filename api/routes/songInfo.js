@@ -15,4 +15,18 @@ router.get("/checkLibrary/:songID/:username", function(req, res, next){
     });
 })
 
+router.get("/changeLibrary/:songID/:username/:status", function(req, res, next){
+    console.log("Editing library of " + req.params.username + " for song: " + req.params.songID);
+    console.log("Status: " + req.params.status);
+
+    response = database_module.editLibrary(req, res, {
+        username: req.params.username,
+        song: req.params.songID,
+        status: req.params.status
+    }).then(function(str){
+        console.log(str);
+        res.send(str);
+    });
+})
+
 module.exports=router;

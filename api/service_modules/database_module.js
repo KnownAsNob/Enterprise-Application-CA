@@ -129,15 +129,19 @@ exports.checkLibrary = function (req, res, info) {
             
             console.log("[SONG INFO] Connected to database!");
 
-            con.query("SELECT b.songID FROM users INNER JOIN library_item ON USERS.userID = library_item.userID WHERE a.username = " + info.username + " AND b.songID = " + info.song + ";", function (err, result, fields) {    
+            con.query("SELECT library_item.songID FROM library_item INNER JOIN users ON users.userID = library_item.userID WHERE users.username = '" + info.username + "' AND library_item.songID = '" + info.song + "';", function (err, result, fields) {    
                 
                 if (err)
                 {
-                    //throw(err);
+                    throw(err);
+                };
+
+                if(!result[0])
+                {
                     console.log("Didn't find a matching track!");
                     resolve({inLib: "NO"});
                     return;
-                };
+                }
 
                 resolve({inLib: "YES"});
 
@@ -153,3 +157,61 @@ exports.checkLibrary = function (req, res, info) {
     })
 }
 
+exports.editLibrary = function (req, res, info) {
+    
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[SONG INFO] Connected to database!");
+
+            //Check status - Decide whether to add or remove
+            if(req.params.status == "Add to your library!") {
+                console.log("Adding to library...")
+
+                queryString = "INSERT INTO library_item (userID, songID) values ((SELECT userID FROM users WHERE username = '" + info.username + "'), '" + info.song + "');";
+                
+                status = {action: "ADDED"};
+            }
+            
+            else {
+                console.log("Removing from library...")
+
+                queryString = "DELETE FROM library_item WHERE userID = (SELECT userID FROM users WHERE username = '" + info.username + "') AND songID = '" + info.song + "';";
+            
+                status = {action: "REMOVED"}
+            }
+
+            con.query(queryString, function (err, result, fields) {    
+                
+                if (err)
+                {
+                    throw(err);
+                    console.log("Something went wrong with the query!");
+                    resolve({action: "FAIL"});
+                    return;
+                };
+
+                resolve(status);
+
+            });
+
+            //Sends all queries, send quit packet and quits gracefully
+            con.end((err) => {
+            
+                if (err) throw err;
+
+            });
+        }); 
+    })
+}

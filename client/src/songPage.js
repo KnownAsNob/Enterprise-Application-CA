@@ -20,12 +20,30 @@ class SongPage extends React.Component {
         this.checkLibrary();
     }
 
-    editLibrary = () => {
+    editLibrary = async () => {
         console.log("Changing user's library...");
+        console.log(this.state.libraryStatus);
+        console.log(this.props.location);
         
         //Check user is logged in
         if(this.props.loggedIn === "LOGGED_IN") {
-            console.log("Okay")
+            
+            const res = await fetch("http://localhost:9000/songInfo/changeLibrary/" + this.props.location.state.songInfo.mbid + 
+            "/" + this.props.location.state.user.username +
+            "/" + this.state.libraryStatus, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            }).then(res => res.json());
+
+            console.log(res);
+            (res.action === "ADDED") ?
+                this.setState({libraryStatus: "Remove from your library!"})
+            :
+                this.setState({libraryStatus: "Add to your library!"})
+
         }
 
         else {
@@ -54,7 +72,7 @@ class SongPage extends React.Component {
             
             //Set button text (State)
             (res.inLib === "YES") ?
-                this.setState({libraryStatus: "This song is in your library!"})
+                this.setState({libraryStatus: "Remove from your library!"})
             :
                 this.setState({libraryStatus: "Add to your library!"});
         }

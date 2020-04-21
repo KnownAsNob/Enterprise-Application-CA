@@ -109,3 +109,47 @@ exports.hashPassword = function (password) {
 
 }
 
+// ------------------ USER LIBRARY ------------------ //
+
+exports.checkLibrary = function (req, res, info) {
+    
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[SONG INFO] Connected to database!");
+
+            con.query("SELECT b.songID FROM users INNER JOIN library_item ON USERS.userID = library_item.userID WHERE a.username = " + info.username + " AND b.songID = " + info.song + ";", function (err, result, fields) {    
+                
+                if (err)
+                {
+                    //throw(err);
+                    console.log("Didn't find a matching track!");
+                    resolve({inLib: "NO"});
+                    return;
+                };
+
+                resolve({inLib: "YES"});
+
+            });
+
+            //Sends all queries, send quit packet and quits gracefully
+            con.end((err) => {
+            
+                if (err) throw err;
+
+            });
+        }); 
+    })
+}
+

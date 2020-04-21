@@ -23,6 +23,21 @@
 .comment{
   background-color: #1f2251;
   outline: 1px solid white;
+  font-family: Arial;
+  font-size: 130%;
   padding: 1%;
+  margin: 0.5%;
 }
 
+#commentLabel, #commentTextBox {
+  color: white;
+  background-color: #1f2251;
+  font-size: 130%;
+}
+
+#commentSubmitButton {
+  float: right;
+  margin-top: 1%;
+  width: 10%;
+  height: 40px;
+}

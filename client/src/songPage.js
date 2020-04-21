@@ -1,12 +1,25 @@
 import React from "react";
 
+import Comment from './commentItem';
+
+import {
+    Label,
+    Input
+} from "reactstrap";
+
 class SongPage extends React.Component {
     
     constructor(props){
         super();
         this.state = {
             libraryStatus: "",
-            libraryErrorMsg: ""
+            libraryErrorMsg: "",
+            comments: "",
+            values: {
+                username: "",
+                songID: "",
+                commentText: ""
+            }
         };
     }
 
@@ -18,6 +31,17 @@ class SongPage extends React.Component {
 
         //Check if song in library
         this.checkLibrary();
+        this.fetchComments();
+
+        console.log(this.props.location);
+
+        this.setState({
+            values: {
+                username: this.props.location.state.user.username,
+                songID: this.props.location.state.songInfo.mbid,
+                commentText: ""
+            }
+        })
     }
 
     editLibrary = async () => {
@@ -72,7 +96,7 @@ class SongPage extends React.Component {
             
             //Set button text (State)
             (res.inLib === "YES") ?
-                this.setState({libraryStatus: "Remove from your library!"})
+                this.setState({libraryStatus: "Remove from library!"})
             :
                 this.setState({libraryStatus: "Add to your library!"});
         }
@@ -81,6 +105,86 @@ class SongPage extends React.Component {
             this.setState({libraryStatus: "Add to your library!"});
         }  
     };
+
+    fetchComments = async () => {
+        console.log("Fetching comments...");
+
+        const res = await fetch("http://localhost:9000/songInfo/" + this.props.location.state.songInfo.mbid + "/comments", 
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                },
+                credentials: "include"
+            }).then(res => res.json());
+
+        (res.comments === "None") ? 
+            console.log("No comments") 
+        :
+            this.setState(prevState => ({
+                comments: [...prevState.comments, res.comments]
+            }));
+    }
+
+    handleInputChange = e => this.setState({
+        values: { ...this.state.values, [e.target.name]: e.target.value }     
+    });
+
+    submitComment = async e => {
+        e.preventDefault();
+        console.log("Comment submitted");
+
+        //console.log(this.state.values);
+        //console.log(this.props.location.state);
+
+        const res = await fetch("http://localhost:9000/songInfo/postcomment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(this.state.values),
+                credentials: "include"
+            }).then(res => res.json());
+
+            console.log(res);
+
+            if(res.status === "Added")
+            {
+                window.location.reload();
+            }
+                
+
+        //console.log(this.state.values.commentText);
+        //console.log(this.props.location.state);
+    }
+
+    handleUserStatus = () => {
+        let loggedIn = this.props.location.state.loggedIn;
+
+        if(loggedIn === "LOGGED_IN")
+        {
+            return (
+                <div className="col-md-12 mb-12 write-comment">
+                    <form onSubmit={this.submitComment}>  
+                        <Label for="commentTextBox" id="commentLabel">Enter your comment:</Label>
+                        <Input type="textarea" 
+                                name="commentText"
+                                id="commentTextBox" 
+                                placeholder="Write here!"
+                                value={this.state.values.commentText}
+                                onChange={this.handleInputChange}
+                        />
+                        <button  className="btn btn-success btn-sm" id="commentSubmitButton" type="submit">Submit</button>
+                    </form>
+                </div>
+            );
+        }
+
+        else 
+        {
+            return <h2>Sign in to post a comment!</h2>; 
+        }
+    }
 
     render() {
 
@@ -107,13 +211,19 @@ class SongPage extends React.Component {
                     {/* Comment section */}
                     <div className="col-md-12 mb-12 comment-block">
                         <h3>What are your thoughts?</h3>
-                        <div className = "comment">
-                            <p><i>Posted by nelly97 on 12/12/2020</i></p>
-                            <p>This song is great</p>
-                            {this.checkLogin}
-                        </div>
                         
+                        {this.state.comments !== "" ? (
+
+                            <pre>
+                                {this.state.comments[0].map(comment => <Comment details = {comment} ></Comment>)}
+                            </pre>
+                        ) : (
+                            <h4>No comments yet!</h4>
+                        )}
+
                     </div>
+                    {/* Write comment section */}
+                    {<this.handleUserStatus />}
                 </div>
             </div>
         )

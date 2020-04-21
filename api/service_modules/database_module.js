@@ -129,7 +129,9 @@ exports.checkLibrary = function (req, res, info) {
             
             console.log("[SONG INFO] Connected to database!");
 
-            con.query("SELECT library_item.songID FROM library_item INNER JOIN users ON users.userID = library_item.userID WHERE users.username = '" + info.username + "' AND library_item.songID = '" + info.song + "';", function (err, result, fields) {    
+            console.log(info);
+
+            con.query("SELECT library_item.songID FROM library_item INNER JOIN users ON users.userID = library_item.userID WHERE users.username = '" + req.session.user.username + "' AND library_item.songID = '" + info.song + "';", function (err, result, fields) {    
                 
                 if (err)
                 {
@@ -179,7 +181,7 @@ exports.editLibrary = function (req, res, info) {
             if(req.params.status == "Add to your library!") {
                 console.log("Adding to library...")
 
-                queryString = "INSERT INTO library_item (userID, songID) values ((SELECT userID FROM users WHERE username = '" + info.username + "'), '" + info.song + "');";
+                queryString = "INSERT INTO library_item (userID, songID) values ((SELECT userID FROM users WHERE username = '" + req.session.user.username + "'), '" + info.song + "');";
                 
                 status = {action: "ADDED"};
             }
@@ -187,7 +189,7 @@ exports.editLibrary = function (req, res, info) {
             else {
                 console.log("Removing from library...")
 
-                queryString = "DELETE FROM library_item WHERE userID = (SELECT userID FROM users WHERE username = '" + info.username + "') AND songID = '" + info.song + "';";
+                queryString = "DELETE FROM library_item WHERE userID = (SELECT userID FROM users WHERE username = '" + req.session.user.username + "') AND songID = '" + info.song + "';";
             
                 status = {action: "REMOVED"}
             }
@@ -203,6 +205,96 @@ exports.editLibrary = function (req, res, info) {
                 };
 
                 resolve(status);
+
+            });
+
+            //Sends all queries, send quit packet and quits gracefully
+            con.end((err) => {
+            
+                if (err) throw err;
+
+            });
+        }); 
+    })
+}
+
+exports.fetchComments = function (req, res, info) {
+    
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[SONG COMMENTS] Connected to database!");
+
+            con.query("SELECT * FROM comment WHERE songID = '" + info.songID + "';", function (err, result, fields) {    
+                
+                if (err)
+                {
+                    throw(err);
+                };
+
+                if(!result[0])
+                {
+                    console.log("Didn't find any comments!");
+                    resolve({comments: "None"});
+                    return;
+                }
+
+                resolve({comments: result});
+
+            });
+
+            //Sends all queries, send quit packet and quits gracefully
+            con.end((err) => {
+            
+                if (err) throw err;
+
+            });
+        }); 
+    })
+}
+
+exports.addComment = function (req, res) {
+    
+    //console.log("Reached module");
+    //console.log(req.body);
+
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[CREATE COMMENT] Connected to database!");
+
+            con.query("INSERT INTO comment (userID, username, songID, commentText, datePosted)" +
+            " VALUES ((SELECT userID FROM users WHERE username = '" + req.session.user.username + "'), '" + req.session.user.username + "', '" + req.body.songID + "', '" +
+            req.body.commentText + "', SYSDATE());", function (err, result, fields) {
+
+                if (err)
+                {
+                    throw(err);
+                };
+
+                resolve({status: "Added"});
 
             });
 

@@ -16,15 +16,6 @@ const { check, validationResult } = require('express-validator');
 var api_module = require('../service_modules/api_module.js');
 
 
-//Homepage test response
-/*router.post("/", function(req, res, next){ //Change to get
-    
-    console.log("Visited");
-  
-  //res.render('index', { title: 'Express' });
-    
-})*/
-
 //Check if session contains user login
 router.post('/checkAuth', (req, res) => {
 

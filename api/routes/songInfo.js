@@ -34,6 +34,20 @@ router.post("/changeLibrary", function(req, res, next){
     });
 })
 
+router.get("/getlibrary/:username", function(req, res, next){
+    console.log("Fetching library of " + req.params.username);
+
+    console.log(req.session.user.username);
+
+    response = database_module.getLibrary(req, res, {
+        username: req.session.user.username,
+    }).then(function(str){
+        console.log(str);
+        res.send(str);
+    });
+})
+
+
 /* -------------- COMMENTS --------------- */
 
 router.get("/:songID/comments", function(req, res, next){

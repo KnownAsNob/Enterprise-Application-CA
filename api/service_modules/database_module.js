@@ -313,6 +313,56 @@ exports.editLibrary = function (req, res, info) {
     })
 }
 
+exports.getLibrary = function (req, res, info) {
+    
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[GET LIBRARY] Connected to database!");
+
+            console.log(info);
+
+            con.query("SELECT library_item.artist, library_item.title FROM library_item INNER JOIN users ON users.userID = library_item.userID WHERE users.username = '" + info.username + "';", function (err, result, fields) {    
+                
+                if (err)
+                {
+                    throw(err);
+                };
+
+                if(!result[0])
+                {
+                    console.log("Library empty!");
+                    resolve({status: "EMPTY"});
+                    return;
+                }
+
+                resolve({status: result});
+
+            });
+
+            //Sends all queries, send quit packet and quits gracefully
+            con.end((err) => {
+            
+                if (err) throw err;
+
+            });
+        }); 
+    })
+}
+
+// ------------------ USER COMMENTS ------------------ //
+
 exports.fetchComments = function (req, res, info) {
     
     return new Promise(function(resolve, reject){

@@ -29,12 +29,14 @@ router.get('/search/:userSearch', function(req, res){
             res.send(response);
         }
     };
-    xhttp.open("GET", "http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json", true);
+    xhttp.open("GET", "http://ws.audioscrobbler.com/2.0/?method=track.search&track=" + req.params.userSearch + "&api_key=9a2e3bd04810f60b6f5e1907306e581e&format=json", true);
     xhttp.send();
 
     //Call API
     //api_module.searchAPI(req.params.userSearch);
 
 });
+
+
 
 module.exports=router;

@@ -79,6 +79,7 @@ router.post('/login', [
         username: req.body.username,
         password: req.body.password
     }).then(function(str){
+        console.log(str);
         res.send(str);
     });
 
@@ -123,7 +124,7 @@ router.post('/createAccount', [
 
     //Hash password
     req.body.password = database_module.hashPassword(req.body.password);
-    
+
     //Create user in database
     database_module.createUser(req, res, {
         username: req.body.username,
@@ -146,6 +147,22 @@ router.get('/search/:userSearch', function(req, res){
     api_module.searchAPI(req.params.userSearch);
 
 });
+
+//Delete account
+router.get('/delete/:account', (req, res) => {
+
+    let username = req.params.account;
+
+    console.log("Deleting account for: " + username);
+
+    response = database_module.deleteUser(req, res, {
+        username: username
+    }).then(function(str){
+        console.log(str);
+        res.send(str);
+    });
+	
+})
 
 // ---------------------------------------------
 

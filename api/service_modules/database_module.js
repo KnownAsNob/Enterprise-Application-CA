@@ -78,14 +78,20 @@ exports.authenticateUser = function (req, res, user) {
 
                 console.log("Result missing: " + result);
 
-                console.log("Fetched user: " + result[0].username);
+                //console.log("Fetched user: " + result[0].username);
+                //console.log("Fetched user: " + result[0].email);
                 
+                console.log(req.body);
+                console.log(user);
+
                 if(bcrypt.compareSync(user.password, result[0].password)) {
-                        resolve({usernname: result[0], email: result[0].email});
-                        
                         //Set session login information
                         req.session.loggedIn = 1;
-                        req.session.user = {username: req.body.username, email: req.body.email };
+                        req.session.user = {username: result[0].username, email: result[0].email };
+
+                    
+                        resolve({usernname: result[0].username, email: result[0].email});
+                         
                     } else {
                         resolve({errors: "Those details do not match anything we have!"});
                 }
@@ -107,6 +113,93 @@ exports.hashPassword = function (password) {
 
     return(bcrypt.hashSync(password, saltRounds));
 
+}
+
+
+//Hash password
+exports.deleteUser = function (req, response, user) { 
+
+    return new Promise(function(resolve, reject){
+        //Create connection
+        var con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "220368",
+            database: "world"
+        });
+
+        //On connection
+        con.connect(function(err) 
+        {
+            if (err) throw err;
+            
+            console.log("[DELETE USER] Connected to database!");
+
+            //console.log(info);
+
+            con.query("SELECT userID from users WHERE username = '" + user.username + "';", function (err, result, fields) {    
+                
+                if (err)
+                {
+                    throw(err);
+                };
+
+                let userID = result[0].userID;
+
+                //Delete comments
+                con.query("DELETE FROM comment WHERE userID = '" + userID + "';", function (err, result, fields) {    
+                
+                    if (err)
+                    {
+                        throw(err);
+                    };
+    
+                });
+
+                //Delete library items
+                con.query("DELETE FROM library_item WHERE userID = '" + userID + "';", function (err, result, fields) {    
+                
+                    if (err)
+                    {
+                        throw(err);
+                    };
+    
+                });
+
+                //Delete user
+                con.query("DELETE FROM users WHERE userID = '" + userID + "';", function (err, result, fields) {    
+                
+                    if (err)
+                    {
+                        throw(err);
+                    };
+    
+                });
+
+
+                resolve({status: "success"});
+
+            });
+
+            /*con.query("DELETE FROM users WHERE username = '" + user.username + "';", function (err, result, fields) {    
+                
+                if (err)
+                {
+                    throw(err);
+                };
+
+                resolve({status: "Success"});
+
+            });*/
+
+            //Sends all queries, send quit packet and quits gracefully
+            /*con.end((err) => {
+            
+                if (err) throw err;
+
+            });*/
+        }); 
+    })
 }
 
 // ------------------ USER LIBRARY ------------------ //
@@ -178,10 +271,12 @@ exports.editLibrary = function (req, res, info) {
             console.log("[SONG INFO] Connected to database!");
 
             //Check status - Decide whether to add or remove
-            if(req.params.status == "Add to your library!") {
+            if(info.status == "Add to your library!") {
                 console.log("Adding to library...")
 
-                queryString = "INSERT INTO library_item (userID, songID) values ((SELECT userID FROM users WHERE username = '" + req.session.user.username + "'), '" + info.song + "');";
+                console.log(console.log(info.songTitle));
+
+                queryString = "INSERT INTO library_item (userID, songID, artist, title) values ((SELECT userID FROM users WHERE username = '" + req.session.user.username + "'), '" + info.song + "', '" + info.songArtist + "', '" + info.songTitle + "');";
                 
                 status = {action: "ADDED"};
             }

@@ -120,7 +120,7 @@ class App extends React.Component {
               handleSuccessfulAuth = {this.handleSuccessfulAuth}
               component={LoginPage}
             />
-            <Route exact path="/account" render={(props) => <AccountPage {...props} loggedInStatus = {this.state.loggedInStatus} account = {this.state.user} />} />
+            <Route exact path="/account" render={(props) => <AccountPage {...props} loggedInStatus = {this.state.loggedInStatus} account = {this.state.user} signout = {this.signOut} />} />
             {/*<Route exact path="/account" component={AccountPage} />*/}
             <Route exact path="/results" component={SearchResultsPage} />
             <Route exact path="/song" render={(props) => <SongPage {...props} loggedIn = {this.state.loggedInStatus} user = {this.state.user} />} />

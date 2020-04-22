@@ -39,6 +39,8 @@ class SongPage extends React.Component {
             values: {
                 username: this.props.location.state.user.username,
                 songID: this.props.location.state.songInfo.mbid,
+                songArtist: this.props.location.state.songInfo.artist,
+                songTitle: this.props.location.state.songInfo.name,
                 commentText: ""
             }
         })
@@ -52,13 +54,12 @@ class SongPage extends React.Component {
         //Check user is logged in
         if(this.props.loggedIn === "LOGGED_IN") {
             
-            const res = await fetch("http://localhost:9000/songInfo/changeLibrary/" + this.props.location.state.songInfo.mbid + 
-            "/" + this.props.location.state.user.username +
-            "/" + this.state.libraryStatus, {
-                method: "GET",
+            const res = await fetch("http://localhost:9000/songInfo/changeLibrary/", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
+                body: JSON.stringify(this.state),
                 credentials: "include"
             }).then(res => res.json());
 
